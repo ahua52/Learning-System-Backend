@@ -7,17 +7,15 @@ import (
 )
 
 type User struct {
-	Id       string
-	Username string
-	Password string
-	Email    string
-	Avatar   string
-	// Permissions string
-	Role       string
-	CreatedAt  int32
-	UpdatedAt  int32
-	UserRoleId string
-	UserRole   Role `gorm:"foreignKey:UserRoleId"`
+	Id       string `json:"id"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Email    string `json:"email"`
+	Avatar   string `json:"avatar"`
+	RoleId   string `json:"role_id"`
+	Role     Role   `json:"role";gorm:"foreignKey:RoleId"`
+	// permissions []Permission
+	// Permissions []Permission
 }
 
 func (User) TableName() string {
@@ -38,19 +36,21 @@ func CheckAuth(username, password string) (bool, error) {
 	return false, nil
 }
 
-func GetUser(username string) ([]Role, error) {
-	// var user User
-	// fmt.Println("are you comming")
-	// err := DB.Preload("UserRole").Where("username = ? ", username).First(&user).Error
-	// if err != nil && err != gorm.ErrRecordNotFound {
-	// 	return nil, err
-	// }
-	// return &user, nil
-	userRole := []Role{}
+func GetUser(username string) (*User, *Role, error) {
+	var user User
 	fmt.Println("are you comming")
-	err := DB.Preload("Permission").First(&userRole).Error
+	err := DB.Preload("Role").Where("username = ? ", username).First(&user).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
-		return nil, err
+		return nil, nil, err
 	}
-	return userRole, nil
+
+	var role Role
+	fmt.Println("444", user)
+	err1 := DB.Preload("Permission").Where("id = ? ", user.RoleId).First(&role).Error
+	if err1 != nil && err != gorm.ErrRecordNotFound {
+		return nil, nil, err1
+	}
+
+	return &user, &role, nil
+
 }

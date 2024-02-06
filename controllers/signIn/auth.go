@@ -73,21 +73,33 @@ func (con BaseSignInControl) GetAuth(c *gin.Context) {
 		// appG.Response(http.StatusInternalServerError, e.ERROR_AUTH_TOKEN, nil)
 		return
 	}
-	user, _ := getUserData(Username)
+	user, role, err := models.GetUser(Username)
+	// user.Permissions = role.Permission
 	fmt.Println(1111, user)
+	// returnjson := ReturnUser{
+	// 	user,
+	// 	permissions: role.Permissions,
+	// }
 	c.JSON(http.StatusInternalServerError, gin.H{
 		"message": "success",
 		"data": gin.H{
 			"accessToken": token,
 			"user":        user,
+			"permissions": role.Permission,
 		},
 	})
 }
 
-func getUserData(username string) ([]models.Role, error) {
-	user, err := models.GetUser(username)
-	if err != nil {
-		return nil, err
-	}
-	return user, nil
-}
+// type ReturnUser struct {
+// 	User
+// 	// permissions []Permission
+// 	Permissions []models.Permission `json:"permissions"`
+// }
+
+// func getUserData(username string) (*models.User, *models.Role, error) {
+// 	user, role, err := models.GetUser(username)
+// 	if err != nil {
+// 		return nil, nil, err
+// 	}
+// 	return user, role, nil
+// }
