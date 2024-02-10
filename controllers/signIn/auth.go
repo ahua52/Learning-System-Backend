@@ -17,6 +17,12 @@ type auth struct {
 	Password string `valid:"Required; MaxSize(50)"`
 }
 
+type Info struct {
+	models.User
+	permissions []models.Permission
+	// Permissions []Permission
+}
+
 // @Summary Get Auth
 // @Produce  json
 // @Param username query string true "userName"
@@ -38,6 +44,7 @@ func (con BaseSignInControl) GetAuth(c *gin.Context) {
 		// app.MarkErrors(valid.Errors)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message":            "error",
+			"status":             -1,
 			"paymentReferenceId": "StatusBadRequest",
 		})
 		// appG.Response(http.StatusBadRequest, e.INVALID_PARAMS, nil)
@@ -49,6 +56,7 @@ func (con BaseSignInControl) GetAuth(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message":            "error",
+			"status":             -1,
 			"paymentReferenceId": "ServerError",
 		})
 		// appG.Response(http.StatusInternalServerError, e.ERROR_AUTH_CHECK_TOKEN_FAIL, nil)
@@ -58,6 +66,7 @@ func (con BaseSignInControl) GetAuth(c *gin.Context) {
 	if !isExist {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"message":            "error",
+			"status":             -1,
 			"paymentReferenceId": "Unauthorized",
 		})
 		// appG.Response(http.StatusUnauthorized, e.ERROR_AUTH, nil)
@@ -68,24 +77,22 @@ func (con BaseSignInControl) GetAuth(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message":            "error",
+			"status":             -1,
 			"paymentReferenceId": "ServerError",
 		})
 		// appG.Response(http.StatusInternalServerError, e.ERROR_AUTH_TOKEN, nil)
 		return
 	}
 	user, role, err := models.GetUser(Username)
-	// user.Permissions = role.Permission
-	fmt.Println(1111, user)
-	// returnjson := ReturnUser{
-	// 	user,
-	// 	permissions: role.Permissions,
-	// }
-	c.JSON(http.StatusInternalServerError, gin.H{
-		"message": "success",
+	user.Role.Permission = role.Permission
+	//to-do: permissions as a field of user
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "",
+		"status":  0,
 		"data": gin.H{
 			"accessToken": token,
 			"user":        user,
-			"permissions": role.Permission,
 		},
 	})
 }

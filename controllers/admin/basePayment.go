@@ -18,8 +18,6 @@ type BasePaymentControl struct {
 }
 
 func (con BasePaymentControl) SignIn(ctx *gin.Context) {
-	// console.log(ctx)
-	// fmt.Println(1111, ctx)
 	ctx.JSON(http.StatusOK, gin.H{
 		"message":            "success",
 		"paymentReferenceId": rand.Intn(10000000),

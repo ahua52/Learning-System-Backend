@@ -113,7 +113,6 @@ func (j *JWT) ParseToken(tokenString string) (*CustomClaims, error) {
 			} else if ve.Errors&jwt.ValidationErrorNotValidYet != 0 {
 				return nil, TokenNotValidYet
 			} else {
-				fmt.Println(22222222)
 				return nil, TokenInvalid
 			}
 		}
@@ -121,7 +120,6 @@ func (j *JWT) ParseToken(tokenString string) (*CustomClaims, error) {
 	if claims, ok := token.Claims.(*CustomClaims); ok && token.Valid {
 		return claims, nil
 	}
-	fmt.Println(3333333333)
 	return nil, TokenInvalid
 }
 

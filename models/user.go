@@ -14,7 +14,6 @@ type User struct {
 	Avatar   string `json:"avatar"`
 	RoleId   string `json:"role_id"`
 	Role     Role   `json:"role";gorm:"foreignKey:RoleId"`
-	// permissions []Permission
 	// Permissions []Permission
 }
 

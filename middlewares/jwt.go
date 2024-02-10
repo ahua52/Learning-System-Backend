@@ -24,9 +24,6 @@ func ParseJWT(c *gin.Context) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return []byte(hmacSampleSecret), nil
 	})
-	fmt.Println(11111)
-	fmt.Println(err)
-	fmt.Println(11111)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"code": 500,

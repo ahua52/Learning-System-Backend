@@ -17,10 +17,8 @@ type User struct {
 }
 
 func (con BaseSignInControl) SignIn(ctx *gin.Context) {
-	fmt.Println(1111, ctx.Request.PostForm)
 	json := User{}
 	ctx.ShouldBind(&json)
-	fmt.Println(1111, json.Username, json.Password)
 
 	var user *models.User
 	var routePermition *models.Permission
